@@ -1,0 +1,2 @@
+建立兩個platform_device, name = "xxxx-test", id = "223" and "-1"
+在/sys/bus/platform/devices/ 觀察哪裡不同

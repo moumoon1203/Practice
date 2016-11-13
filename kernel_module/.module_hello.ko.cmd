@@ -1,0 +1,1 @@
+cmd_/media/gene-chen/Data/Practice/kernel_module/module_hello.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /media/gene-chen/Data/Practice/kernel_module/module_hello.ko /media/gene-chen/Data/Practice/kernel_module/module_hello.o /media/gene-chen/Data/Practice/kernel_module/module_hello.mod.o

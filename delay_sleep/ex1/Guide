@@ -1,0 +1,3 @@
+使用timer範例ex1, 加入delay。 (不可sleep,因為callback_function是interrupt context)
+觀察output是否有延遲設定時間。
+

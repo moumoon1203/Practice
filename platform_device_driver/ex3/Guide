@@ -1,0 +1,4 @@
+建立不同名稱的platform_device(name = "xxxx-test")和platform_driver(name = "yyyy-test")
+使用platform_device_id table仍可配對成功。
+
+並加入多的檔案的module專案化, 修改Makefile.

@@ -1,0 +1,1 @@
+cmd_/media/gene-chen/Data/Practice/timer_hrtimer/ex2/hrtimer_init.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /media/gene-chen/Data/Practice/timer_hrtimer/ex2/hrtimer_init.ko /media/gene-chen/Data/Practice/timer_hrtimer/ex2/hrtimer_init.o /media/gene-chen/Data/Practice/timer_hrtimer/ex2/hrtimer_init.mod.o

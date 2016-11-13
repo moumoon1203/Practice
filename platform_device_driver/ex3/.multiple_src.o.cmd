@@ -1,0 +1,1 @@
+cmd_/media/gene-chen/Data/Practice/platform_device_driver/ex3/multiple_src.o := ld -m elf_x86_64   -r -o /media/gene-chen/Data/Practice/platform_device_driver/ex3/multiple_src.o /media/gene-chen/Data/Practice/platform_device_driver/ex3/platform_device_driver.o /media/gene-chen/Data/Practice/platform_device_driver/ex3/printa.o 

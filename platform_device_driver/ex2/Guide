@@ -1,0 +1,2 @@
+建立一個platform_driver, name = "xxxx-test"
+與範例ex1的platform_device名稱相同，於是自動配對到執行probe函數。
