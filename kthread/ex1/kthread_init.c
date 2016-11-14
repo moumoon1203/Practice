@@ -1,25 +1,36 @@
 #include <linux/init.h>
 #include <linux/module.h>
 #include <linux/platform_device.h>
-#include <linux/timer.h>
+#include <linux/kthread.h>
 #include <linux/delay.h>
+
+#define N_KTHREADS 20
 
 struct my_drv_data {
 	struct device *dev;
-	struct timer_list my_timer;
+	struct task_struct *tsk[N_KTHREADS];
 };
 
-static void my_timer_callback(unsigned long data)
+static int kthread_function(void *data)
 {
-	struct my_drv_data *mdd = (struct my_drv_data *)data;
-
-	dev_info(mdd->dev, "timeout : %s\n", __func__);
-	mdelay(50);
-	mod_timer(&mdd->my_timer, jiffies + msecs_to_jiffies(200));
+	struct my_drv_data *mdd = (struct my_drv_data *)data;	
+	static int kthread_val = 0;
+	int ret = 0;
+	int i = 0;
+	
+	for (i = 0; i < 1000; i++) { 
+		kthread_val++;
+		mdelay(1);
+	};
+	
+	dev_info(mdd->dev, "kthread stop, kthread_val = %d, %s\n", kthread_val, __func__);
+	return ret;
 }
 
 static int driver_probe(struct platform_device *pdev){
 	struct my_drv_data *mdd;
+	int ret = 0;
+	int i = 0;
 
 	mdd = devm_kzalloc(&pdev->dev, sizeof(struct my_drv_data), GFP_KERNEL);
 	if (!mdd)
@@ -27,19 +38,25 @@ static int driver_probe(struct platform_device *pdev){
 	
 	mdd->dev = &pdev->dev;
 	platform_set_drvdata(pdev, mdd);
-
-	mdd->my_timer.expires = jiffies + msecs_to_jiffies(200);
-	setup_timer(&mdd->my_timer, my_timer_callback, (unsigned long)mdd);
-	add_timer(&mdd->my_timer);
+	
+	for (i = 0; i < N_KTHREADS; i++) {
+		mdd->tsk[i] = kthread_run(kthread_function, (void *)mdd, "test_thread%d", i);
+		if (IS_ERR(mdd->tsk[i])) {
+			ret = PTR_ERR(mdd->tsk[i]);
+			dev_err(&pdev->dev, "kthread_run failed : %d\n", i);
+			goto fail_kthread_run;
+		}
+	}
 
 	dev_info(&pdev->dev, "%s\n", __func__);
 	return 0;
+fail_kthread_run:
+	devm_kfree(&pdev->dev, mdd);
+	return ret;
 }
 
 static int driver_remove(struct platform_device *pdev){
 	struct my_drv_data *mdd = platform_get_drvdata(pdev);
-
-	del_timer(&mdd->my_timer);
 
 	dev_info(mdd->dev, "%s\n", __func__);
 	return 0;		

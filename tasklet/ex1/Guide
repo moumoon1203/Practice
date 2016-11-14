@@ -1,0 +1,2 @@
+從timer範例ex1中加入tasklet，在callback function中schedule它。
+觀察tasklet執行順序。

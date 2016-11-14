@@ -3,21 +3,33 @@
 #include <linux/platform_device.h>
 #include <linux/timer.h>
 #include <linux/delay.h>
+#include <linux/interrupt.h>
+
 
 struct my_drv_data {
 	struct device *dev;
 	struct timer_list my_timer;
+	struct tasklet_struct my_tasklet;
 };
+
+static void tasklet_function(unsigned long data)
+{
+	struct my_drv_data *mdd = (struct my_drv_data *)data;
+	static int times = 0;
+	
+	mdelay(50);
+	dev_info(mdd->dev, "%d times bottom-half work in tasklet, %s\n", ++times,__func__);
+}
 
 static void my_timer_callback(unsigned long data)
 {
 	struct my_drv_data *mdd = (struct my_drv_data *)data;
 
 	dev_info(mdd->dev, "timeout : %s\n", __func__);
-	mdelay(50);
+	tasklet_schedule(&mdd->my_tasklet);
+	tasklet_schedule(&mdd->my_tasklet);
 	mod_timer(&mdd->my_timer, jiffies + msecs_to_jiffies(200));
 }
-
 static int driver_probe(struct platform_device *pdev){
 	struct my_drv_data *mdd;
 
@@ -31,6 +43,8 @@ static int driver_probe(struct platform_device *pdev){
 	mdd->my_timer.expires = jiffies + msecs_to_jiffies(200);
 	setup_timer(&mdd->my_timer, my_timer_callback, (unsigned long)mdd);
 	add_timer(&mdd->my_timer);
+
+	tasklet_init(&mdd->my_tasklet, tasklet_function, (unsigned long)mdd);
 
 	dev_info(&pdev->dev, "%s\n", __func__);
 	return 0;
