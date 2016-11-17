@@ -3,13 +3,21 @@
 #include <linux/platform_device.h>
 #include <linux/kthread.h>
 #include <linux/delay.h>
+#include <linux/wait.h>
 
 #define N_KTHREADS 20
 
 struct my_drv_data {
 	struct device *dev;
 	struct task_struct *tsk[N_KTHREADS];
+	wait_queue_head_t wq_head;
+	struct atomic_t v;
 };
+
+struct thread_data {
+	struct my_drv_data *mdd;
+	int thread_id;
+}
 
 static int kthread_function(void *data)
 {
@@ -18,6 +26,7 @@ static int kthread_function(void *data)
 	int ret = 0;
 	int i = 0;
 	
+	//wait_event(&mdd->wq_head, atomic_read(&mdd->v) == tdata->thread_id); 
 	for (i = 0; i < 1000; i++) { 
 		kthread_val++;
 		msleep(5);
@@ -29,6 +38,7 @@ static int kthread_function(void *data)
 
 static int driver_probe(struct platform_device *pdev){
 	struct my_drv_data *mdd;
+	struct thread_data *tdata;
 	int ret = 0;
 	int i = 0;	
 	
@@ -37,9 +47,18 @@ static int driver_probe(struct platform_device *pdev){
 		return -ENOMEM;	
 	mdd->dev = &pdev->dev;
 	platform_set_drvdata(pdev, mdd);
-	dev_info(&pdev->dev, "%s\n", __func__);
+
+	tdata = devm_kzalloc(&pdev->dev, sizeof(struct thread_data)*N_KTHREADS, GFP_KERNEL);
+	if (!tdata) {
+		dev_err(&pdev->dev, "fail thread data allocate\n");
+		ret = -ENOMEM;
+		goto fail_thr_mem_alloc;
 	
+	dev_info(&pdev->dev, "%s\n", __func__);
+
 	for (i = 0; i < N_KTHREADS; i++) {
+		tdata->mdd = mdd;
+		tdata->thread_id = i;
 		mdd->tsk[i] = kthread_run(kthread_function, (void *)mdd, "test_thread%d", i);
 		if (IS_ERR(mdd->tsk[i])) {
 			ret = PTR_ERR(mdd->tsk[i]);
@@ -50,6 +69,8 @@ static int driver_probe(struct platform_device *pdev){
 
 	return 0;
 fail_kthread_run:
+	devm_kfree(&pdev->dev, tdata);
+fail_thr_mem_alloc:
 	devm_kfree(&pdev->dev, mdd);
 	return ret;
 }

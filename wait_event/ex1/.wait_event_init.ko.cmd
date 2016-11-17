@@ -1,0 +1,1 @@
+cmd_/media/gene-chen/Data/Practice/wait_event/ex1/wait_event_init.ko := ld -r -m elf_x86_64 -T ./scripts/module-common.lds --build-id  -o /media/gene-chen/Data/Practice/wait_event/ex1/wait_event_init.ko /media/gene-chen/Data/Practice/wait_event/ex1/wait_event_init.o /media/gene-chen/Data/Practice/wait_event/ex1/wait_event_init.mod.o

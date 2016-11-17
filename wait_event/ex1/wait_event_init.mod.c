@@ -23,12 +23,20 @@ __attribute__((section("__versions"))) = {
 	{ 0x3741f64c, __VMLINUX_SYMBOL_STR(platform_device_unregister) },
 	{ 0x9ffcb8b1, __VMLINUX_SYMBOL_STR(__platform_driver_register) },
 	{ 0x2e32a83a, __VMLINUX_SYMBOL_STR(platform_device_register_full) },
+	{ 0x37a0cba, __VMLINUX_SYMBOL_STR(kfree) },
 	{ 0xf1f5d77d, __VMLINUX_SYMBOL_STR(devm_kfree) },
 	{ 0xf7c2cca1, __VMLINUX_SYMBOL_STR(dev_err) },
 	{ 0x992d89c6, __VMLINUX_SYMBOL_STR(wake_up_process) },
 	{ 0x3fcc7bf4, __VMLINUX_SYMBOL_STR(kthread_create_on_node) },
+	{ 0x9e88526, __VMLINUX_SYMBOL_STR(__init_waitqueue_head) },
+	{ 0xa4d5abf7, __VMLINUX_SYMBOL_STR(kmem_cache_alloc_trace) },
+	{ 0x643c4c76, __VMLINUX_SYMBOL_STR(kmalloc_caches) },
 	{ 0x48d4c96e, __VMLINUX_SYMBOL_STR(devm_kmalloc) },
-	{ 0xf9a482f9, __VMLINUX_SYMBOL_STR(msleep) },
+	{ 0xa6bbd805, __VMLINUX_SYMBOL_STR(__wake_up) },
+	{ 0xf08242c2, __VMLINUX_SYMBOL_STR(finish_wait) },
+	{ 0x2207a57f, __VMLINUX_SYMBOL_STR(prepare_to_wait_event) },
+	{ 0x1000e51, __VMLINUX_SYMBOL_STR(schedule) },
+	{ 0xa1c76e0a, __VMLINUX_SYMBOL_STR(_cond_resched) },
 	{ 0xe67759ca, __VMLINUX_SYMBOL_STR(_dev_info) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 };
@@ -40,4 +48,4 @@ __attribute__((section(".modinfo"))) =
 
 MODULE_ALIAS("platform:xxxx-test");
 
-MODULE_INFO(srcversion, "2C0E4AE7F605F65D8565DC1");
+MODULE_INFO(srcversion, "CA9C7FCC1D85D07299217FF");

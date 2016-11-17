@@ -28,7 +28,9 @@ __attribute__((section("__versions"))) = {
 	{ 0x992d89c6, __VMLINUX_SYMBOL_STR(wake_up_process) },
 	{ 0x3fcc7bf4, __VMLINUX_SYMBOL_STR(kthread_create_on_node) },
 	{ 0x48d4c96e, __VMLINUX_SYMBOL_STR(devm_kmalloc) },
-	{ 0xf9a482f9, __VMLINUX_SYMBOL_STR(msleep) },
+	{ 0xeae3dfd6, __VMLINUX_SYMBOL_STR(__const_udelay) },
+	{ 0x78e739aa, __VMLINUX_SYMBOL_STR(up) },
+	{ 0x6dc6dd56, __VMLINUX_SYMBOL_STR(down) },
 	{ 0xe67759ca, __VMLINUX_SYMBOL_STR(_dev_info) },
 	{ 0xbdfb6dbb, __VMLINUX_SYMBOL_STR(__fentry__) },
 };
@@ -40,4 +42,4 @@ __attribute__((section(".modinfo"))) =
 
 MODULE_ALIAS("platform:xxxx-test");
 
-MODULE_INFO(srcversion, "2C0E4AE7F605F65D8565DC1");
+MODULE_INFO(srcversion, "1C60F1D9FC05481FB0A1C4C");

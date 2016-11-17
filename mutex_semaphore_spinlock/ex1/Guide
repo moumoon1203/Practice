@@ -1,2 +1,4 @@
 建立20個kthread。 
 完成同一時刻對共享變數加1000次，觀察是否產生mutual exclusion.
+
+使用mutex確保共享變數的正確性

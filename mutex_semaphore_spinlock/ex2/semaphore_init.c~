@@ -3,12 +3,14 @@
 #include <linux/platform_device.h>
 #include <linux/kthread.h>
 #include <linux/delay.h>
+#include <linux/semaphore.h>
 
 #define N_KTHREADS 20
 
 struct my_drv_data {
 	struct device *dev;
 	struct task_struct *tsk[N_KTHREADS];
+	struct semaphore sem;
 };
 
 static int kthread_function(void *data)
@@ -18,9 +20,11 @@ static int kthread_function(void *data)
 	int ret = 0;
 	int i = 0;
 	
-	for (i = 0; i < 1000; i++) { 
+	for (i = 0; i < 1000; i++) {
+		mutex_lock(&mdd->my_mutex);
 		kthread_val++;
-		msleep(5);
+		mutex_unlock(&mdd->my_mutex);
+		mdelay(1);
 	};
 	
 	dev_info(mdd->dev, "kthread stop, kthread_val = %d, %s\n", kthread_val, __func__);
@@ -39,6 +43,8 @@ static int driver_probe(struct platform_device *pdev){
 	platform_set_drvdata(pdev, mdd);
 	dev_info(&pdev->dev, "%s\n", __func__);
 	
+	sema_init(&mdd->sem, 1); 
+
 	for (i = 0; i < N_KTHREADS; i++) {
 		mdd->tsk[i] = kthread_run(kthread_function, (void *)mdd, "test_thread%d", i);
 		if (IS_ERR(mdd->tsk[i])) {
@@ -57,6 +63,7 @@ fail_kthread_run:
 static int driver_remove(struct platform_device *pdev){
 	struct my_drv_data *mdd = platform_get_drvdata(pdev);
 
+	//mutex_destroy(&mdd->my_mutex);
 	dev_info(mdd->dev, "%s\n", __func__);
 	return 0;		
 }
